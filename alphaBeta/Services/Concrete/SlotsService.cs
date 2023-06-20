@@ -18,7 +18,7 @@ public class SlotsService : ISlotsService
     }
     public async Task<KeyValuePair<string, int>> PlayGameAsync(Guid IdPlayer, long amount)
     {
-        var findPlayer = await _playersService.GetPlayer(IdPlayer);
+        var findPlayer = await _playersService.GetPlayerById(IdPlayer);
         double loseChance = 100 - (findPlayer.WinChance * 100);
         KeyValuePair<string, int> resultPair = new();
         Random rnd = new Random();

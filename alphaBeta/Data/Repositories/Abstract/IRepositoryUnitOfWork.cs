@@ -1,7 +1,7 @@
 
 public interface IRepositoryUnitOfWork : IDisposable
 {
-    IBaseRepository<Player> PlayerRepository { get; }
-    IBaseRepository<Bet> BetRepository { get; }
+    IBasePlayerRepository<Player> PlayerRepository { get; }
+    IBaseBetRepository<Bet> BetRepository { get; }
     Task Commit();
 }

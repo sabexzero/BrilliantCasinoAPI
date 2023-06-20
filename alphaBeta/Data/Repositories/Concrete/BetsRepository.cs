@@ -2,17 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-public class BetsRepository : IBaseRepository<Bet>
+public class BetsRepository : IBaseBetRepository<Bet>
 {
     private readonly GamesDbContext _context;
     public BetsRepository(GamesDbContext context)
     {
         _context = context;
     }
-
-    public async Task Create(Bet entity)
+    public async Task<Bet> Create(Bet entity)
     {
-        await _context.Set<Bet>().AddAsync(entity);    }
+        await _context.Set<Bet>().AddAsync(entity);
+        return entity;
+    }
 
     public async Task<bool> Delete(Guid id)
     {
@@ -25,9 +26,9 @@ public class BetsRepository : IBaseRepository<Bet>
         return false;
     }
 
-    public async Task<Bet> Get(Guid id)
+    public async Task<Bet> GetById(Guid id)
     {
-        var bet = await Get(id);
+        var bet = await _context.Set<Bet>().FirstOrDefaultAsync(s => s.Id == id)
         if (bet != null)
             return bet;
         else
@@ -41,7 +42,7 @@ public class BetsRepository : IBaseRepository<Bet>
 
     public async Task Update(Bet updatedEntity)
     {
-        var existingEntity = await Get(updatedEntity.Id);
+        var existingEntity = await GetById(updatedEntity.Id);
 
         existingEntity.BetAmount = updatedEntity.BetAmount;
         existingEntity.Result = updatedEntity.Result;
@@ -49,6 +50,12 @@ public class BetsRepository : IBaseRepository<Bet>
 
     public async Task<IEnumerable<Bet>> GetByPlayerId (Guid playerId) 
     {
+        return await _context.Set<Bet>().Where(s => s.PlayerId == playerId).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Bet>> GetByUsername(string username)
+    {
+        var playerId = _context.Set<Player>().FirstOrDefaultAsync(s => s.UserName == username).Result.Id;
         return await _context.Set<Bet>().Where(s => s.PlayerId == playerId).ToListAsync();
     }
 }

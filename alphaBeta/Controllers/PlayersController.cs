@@ -12,9 +12,9 @@ public class PlayerController : Controller
 	}
 
 	[HttpPut("CreatePlayer")]
-	public async Task<ActionResult> CreateNewPlayer(string username)
+	public async Task<ActionResult> CreateNewPlayer(string username, string password)
 	{
-		await _playersService.CreatePlayer(new Player(username));
+		await _playersService.CreatePlayer(username, password);
         await _playersService.SaveChanges();
 		return Ok();
 	}
@@ -25,10 +25,15 @@ public class PlayerController : Controller
         await _playersService.SaveChanges();
         return Ok();
     }
-    [HttpGet("OnePlayer")]
+    [HttpGet("OnePlayerById")]
     public async Task<ActionResult<Player>> GetPlayer(Guid id)
     {
-        return await _playersService.GetPlayer(id);
+        return await _playersService.GetPlayerById(id);
+    }
+    [HttpGet("OnePlayerByName")]
+    public async Task<ActionResult<Player>> GetPlayerByName(string username)
+    {
+        return await _playersService.GetPlayerByName(username);
     }
     [HttpGet("AllPlayers")]
     public async Task<ActionResult<IEnumerable<Player>>> GetAllPlayers()

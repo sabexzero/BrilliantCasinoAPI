@@ -24,7 +24,7 @@ public class BetsService : IBetsService
 
     public async Task<Bet> GetBet(Guid id)
     {
-        return await _repositoryUnitOfWork.BetRepository.Get(id);
+        return await _repositoryUnitOfWork.BetRepository.GetById(id);
     }
 
     public async Task SaveChanges()

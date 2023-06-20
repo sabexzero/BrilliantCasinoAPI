@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// <summary>
 /// Model stavki
 /// </summary>
-public class Bet : Base
-{
+public class Bet
+{ 
+    public Guid Id { get; set; }
+    public DateTime CreatedAt { get; set; }
     public Guid PlayerId { get; set; }
     [Column(TypeName = "text")]
     public Games Game { get; set; }

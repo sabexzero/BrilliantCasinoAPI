@@ -1,46 +1,56 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
-public class PlayerRepository : IBaseRepository<Player>
+public class PlayerRepository : IBasePlayerRepository<Player>
 {
-    private readonly GamesDbContext _context;
-    public PlayerRepository(GamesDbContext context)
+    private readonly UserManager<Player> _userManager;
+    public PlayerRepository(UserManager<Player> userManager)
     {
-        _context = context;
+        _userManager = userManager;
     }
-    public async Task Create(Player entity)
+    public async Task<Player> Create(string username, string password)
     {
-        await _context.Set<Player>().AddAsync(entity);
+        var player = new Player(username);
+        var result = await _userManager.CreateAsync(player, password);
+        if (result.Succeeded)
+        {
+            return player;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public async Task<bool> Delete(Guid id)
     {
-        var deleted = await _context.Set<Player>().FirstOrDefaultAsync(s => s.Id == id);
-        if (deleted != null)
-        {
-            _context.Set<Player>().Remove(deleted);
-            return true;
-        }
-        return false;
+        var player = await _userManager.FindByIdAsync(id.ToString());
+        var result = await _userManager.DeleteAsync(player);
+        return result.Succeeded;
     }
 
-    public async Task<Player> Get(Guid id)
+    public async Task<Player> GetById(Guid id)
     {
-        return await _context.Set<Player>().FirstOrDefaultAsync(x => x.Id == id);
+        var player = await _userManager.FindByIdAsync(id.ToString());
+        return player;
+    }
+    public async Task<Player> GetByUsername(string username)
+    {
+        var player = await _userManager.FindByNameAsync(username);
+        return player;
     }
 
     public async Task<IEnumerable<Player>> GetAll()
     {
-        return await _context.Set<Player>().ToListAsync();
+        var players = await _userManager.Users.ToListAsync();
+        return players;
     }
 
-    public async Task Update(Player updatedEntity)
+    public async Task<bool> UpdatePlayer(Player player)
     {
-        var existingEntity = await Get(updatedEntity.Id);
-
-        existingEntity.Balance = updatedEntity.Balance;
-        existingEntity.WinChance = updatedEntity.WinChance;
-        existingEntity.Bets = updatedEntity.Bets;
-        existingEntity.Username = updatedEntity.Username;
+        var result = await _userManager.UpdateAsync(player);
+        return result.Succeeded;
     }
 }

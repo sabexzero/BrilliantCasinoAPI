@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 /// <summary>
 /// Модель игрока
 /// </summary>
-public class Player : Base
+public class Player : IdentityUser
 {
-    public string Username { get; set; }
+    public Guid Id { get; set; }
+    public DateTime CreatedAt { get; set; }
     public long Balance { get; set; }
     public double WinChance { get; set; }
     public List<Bet> Bets { get; set; }
@@ -12,7 +14,7 @@ public class Player : Base
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
-        Username = username;
+        UserName = username;
         Balance = 0;
         WinChance = 0.36;
         Bets = new List<Bet>();
