@@ -6,7 +6,7 @@ public class PlayerController : Controller
 {
     private readonly IPlayersService _playersService;
 
-	public PlayerController(IPlayersService playersService)
+	public PlayerController(IPlayersService playersService, IRepositoryUnitOfWork unitOfWork)
 	{
 		_playersService = playersService;
 	}
@@ -14,19 +14,19 @@ public class PlayerController : Controller
 	[HttpPut("CreatePlayer")]
 	public async Task<ActionResult> CreateNewPlayer(string username, string password)
 	{
-		await _playersService.CreatePlayer(username, password);
+        await _playersService.CreatePlayer(username, password);
         await _playersService.SaveChanges();
-		return Ok();
+        return Ok();
 	}
 	[HttpDelete("DeletePlayer")]
-    public async Task<ActionResult> DeletePlayer(Guid id)
+    public async Task<ActionResult> DeletePlayer(string id)
     {
         await _playersService.DeletePlayer(id);
         await _playersService.SaveChanges();
         return Ok();
     }
     [HttpGet("OnePlayerById")]
-    public async Task<ActionResult<Player>> GetPlayer(Guid id)
+    public async Task<ActionResult<Player>> GetPlayer(string id)
     {
         return await _playersService.GetPlayerById(id);
     }

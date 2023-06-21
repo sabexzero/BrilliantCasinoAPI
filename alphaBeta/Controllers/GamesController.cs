@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNet.Identity;
 
 namespace alphaBeta.Controllers
 {
@@ -18,7 +17,7 @@ namespace alphaBeta.Controllers
         }
         [HttpGet("Slots")]
         [Authorize("RequireUserClaim")]
-        public async Task<ActionResult<KeyValuePair<string, int>>> Slots(Guid playerId, long amount)
+        public async Task<ActionResult<KeyValuePair<string, int>>> Slots(string playerId, long amount)
         {
             return await _slotsService.PlayGameAsync(playerId, amount);
         }

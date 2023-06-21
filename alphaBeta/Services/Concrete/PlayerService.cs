@@ -13,7 +13,7 @@ public class PlayersService : IPlayersService
         _repositoryUnitOfWork = repositoryUnitOfWork;
     }
 
-    public async Task<bool> AddClaimForUser(Guid id, string claim)
+    public async Task<bool> AddClaimForUser(string id, string claim)
     {
         foreach (PlayerClaims playerClaim in Enum.GetValues(typeof(PlayerClaims)))
         {
@@ -44,7 +44,7 @@ public class PlayersService : IPlayersService
         await AddClaimForUser(player.Id,PlayerClaims.User.ToString());
     }
 
-    public async Task<bool> DeletePlayer(Guid id)
+    public async Task<bool> DeletePlayer(string id)
     {
         await _repositoryUnitOfWork.PlayerRepository.Delete(id);
         return true;
@@ -55,7 +55,7 @@ public class PlayersService : IPlayersService
         return await _repositoryUnitOfWork.PlayerRepository.GetAll();
     }
 
-    public async Task<Player> GetPlayerById(Guid id)
+    public async Task<Player> GetPlayerById(string id)
     {
         return await _repositoryUnitOfWork.PlayerRepository.GetById(id);
     }
@@ -64,7 +64,7 @@ public class PlayersService : IPlayersService
         return await _repositoryUnitOfWork.PlayerRepository.GetByUsername(username);
     }
 
-    public async Task<bool> RemoveClaimForUser(Guid id, string claimString)
+    public async Task<bool> RemoveClaimForUser(string id, string claimString)
     {
         var user = await _repositoryUnitOfWork.PlayerRepository.GetById(id);
         if (user == null)

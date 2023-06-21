@@ -10,30 +10,22 @@ public class PlayerRepository : IBasePlayerRepository<Player>
     {
         _userManager = userManager;
     }
-    public async Task<Player> Create(string username, string password)
+    public async Task Create(string username, string password)
     {
         var player = new Player(username);
-        var result = await _userManager.CreateAsync(player, password);
-        if (result.Succeeded)
-        {
-            return player;
-        }
-        else
-        {
-            return null;
-        }
+        await _userManager.CreateAsync(player,password);
     }
 
-    public async Task<bool> Delete(Guid id)
+    public async Task<bool> Delete(string id)
     {
-        var player = await _userManager.FindByIdAsync(id.ToString());
+        var player = await _userManager.FindByIdAsync(id);
         var result = await _userManager.DeleteAsync(player);
         return result.Succeeded;
     }
 
-    public async Task<Player> GetById(Guid id)
+    public async Task<Player> GetById(string id)
     {
-        var player = await _userManager.FindByIdAsync(id.ToString());
+        var player = await _userManager.FindByIdAsync(id);
         return player;
     }
     public async Task<Player> GetByUsername(string username)

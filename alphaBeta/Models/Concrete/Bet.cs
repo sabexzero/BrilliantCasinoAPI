@@ -7,13 +7,13 @@ public class Bet
 { 
     public Guid Id { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Guid PlayerId { get; set; }
+    public string PlayerId { get; set; }
     [Column(TypeName = "text")]
     public Games Game { get; set; }
     public long BetAmount { get; set; }
     public long Result { get; set; }
 
-    public Bet(Guid playerId, Games game, long betAmount, long result)
+    public Bet(string playerId, Games game, long betAmount, long result)
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;

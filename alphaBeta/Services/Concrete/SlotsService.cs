@@ -16,7 +16,7 @@ public class SlotsService : ISlotsService
             _combinationTable.Add(item, StringConverterToCoeffs.ConvertToCoefficient(item));
         }
     }
-    public async Task<KeyValuePair<string, int>> PlayGameAsync(Guid IdPlayer, long amount)
+    public async Task<KeyValuePair<string, int>> PlayGameAsync(string IdPlayer, long amount)
     {
         var findPlayer = await _playersService.GetPlayerById(IdPlayer);
         double loseChance = 100 - (findPlayer.WinChance * 100);

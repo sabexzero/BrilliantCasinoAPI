@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace alphaBeta.Migrations
 {
     /// <inheritdoc />
-    public partial class firsrt : Migration
+    public partial class Pizda : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +32,6 @@ namespace alphaBeta.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
                     Balance = table.Column<long>(type: "bigint", nullable: false),
                     WinChance = table.Column<double>(type: "double precision", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -167,18 +166,17 @@ namespace alphaBeta.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    PlayerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlayerId = table.Column<string>(type: "text", nullable: false),
                     Game = table.Column<string>(type: "text", nullable: false),
                     BetAmount = table.Column<long>(type: "bigint", nullable: false),
-                    Result = table.Column<long>(type: "bigint", nullable: false),
-                    PlayerId1 = table.Column<string>(type: "text", nullable: false)
+                    Result = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bets_AspNetUsers_PlayerId1",
-                        column: x => x.PlayerId1,
+                        name: "FK_Bets_AspNetUsers_PlayerId",
+                        column: x => x.PlayerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -228,9 +226,9 @@ namespace alphaBeta.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bets_PlayerId1",
+                name: "IX_Bets_PlayerId",
                 table: "Bets",
-                column: "PlayerId1");
+                column: "PlayerId");
         }
 
         /// <inheritdoc />

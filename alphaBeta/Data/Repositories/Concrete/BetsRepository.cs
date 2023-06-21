@@ -28,7 +28,7 @@ public class BetsRepository : IBaseBetRepository<Bet>
 
     public async Task<Bet> GetById(Guid id)
     {
-        var bet = await _context.Set<Bet>().FirstOrDefaultAsync(s => s.Id == id)
+        var bet = await _context.Set<Bet>().FirstOrDefaultAsync(s => s.Id == id);
         if (bet != null)
             return bet;
         else
@@ -48,7 +48,7 @@ public class BetsRepository : IBaseBetRepository<Bet>
         existingEntity.Result = updatedEntity.Result;
     }
 
-    public async Task<IEnumerable<Bet>> GetByPlayerId (Guid playerId) 
+    public async Task<IEnumerable<Bet>> GetByPlayerId (string playerId) 
     {
         return await _context.Set<Bet>().Where(s => s.PlayerId == playerId).ToListAsync();
     }

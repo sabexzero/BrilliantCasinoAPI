@@ -37,10 +37,7 @@ namespace alphaBeta.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("PlayerId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("PlayerId1")
+                    b.Property<string>("PlayerId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -49,7 +46,7 @@ namespace alphaBeta.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerId1");
+                    b.HasIndex("PlayerId");
 
                     b.ToTable("Bets");
                 });
@@ -244,10 +241,6 @@ namespace alphaBeta.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<double>("WinChance")
                         .HasColumnType("double precision");
 
@@ -270,7 +263,7 @@ namespace alphaBeta.Migrations
                 {
                     b.HasOne("Player", null)
                         .WithMany("Bets")
-                        .HasForeignKey("PlayerId1")
+                        .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using alphaBeta.Helpers.Auth;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +17,17 @@ builder.Services.AddScoped<IBaseBetRepository<Bet>, BetsRepository>();
 builder.Services.AddScoped<IPlayersService, PlayersService>();
 builder.Services.AddScoped<IBetsService, BetsService>();
 builder.Services.AddScoped<ISlotsService, SlotsService>();
-builder.Services.AddIdentity<Player, IdentityRole>()
+builder.Services.AddIdentity<Player, IdentityRole>()    
     .AddEntityFrameworkStores<GamesDbContext>()
     .AddDefaultTokenProviders();
-builder.Services.AddScoped<UserManager<Player>>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+}).AddIdentityCookies();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminClaim", policy =>
@@ -31,6 +38,9 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasClaimHandler>();
 
+// Замените предыдущую строку регистрации IUserStore на следующую строку:
+builder.Services.AddScoped<IUserStore<Player>>(provider => new UserStore<Player>(provider.GetRequiredService<GamesDbContext>()));
+builder.Services.AddScoped<UserManager<Player>>();
 
 var app = builder.Build();
 
