@@ -31,7 +31,7 @@ public class SlotsService : ISlotsService
             Bet newBet = new(findPlayer.Id, Games.Slots, amount, amountForBet);
             await _playersService.UpdateBalancePlayer(findPlayer, newBet);
             await _betsService.CreateBet(newBet);
-            await _playersService.SaveChanges();
+            await _betsService.SaveChanges();
         }
         return resultPair;
     }

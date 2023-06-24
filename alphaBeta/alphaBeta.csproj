@@ -22,12 +22,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers\Exeptions\Bet\Exceptions\" />
     <Folder Include="Helpers\Slots\" />
+    <Folder Include="Middleware\" />
     <Folder Include="Models\Abstract\" />
     <Folder Include="Models\Concrete\" />
     <Folder Include="Tests\" />

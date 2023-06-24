@@ -1,40 +1,38 @@
 
 public class BetsService : IBetsService
 {
-    private readonly IRepositoryUnitOfWork _repositoryUnitOfWork;
-    public BetsService(IRepositoryUnitOfWork repositoryUnitOfWork)
+    private readonly IBaseBetRepository _betRepository;
+    public BetsService(IBaseBetRepository betRepository)
     {
-        _repositoryUnitOfWork = repositoryUnitOfWork;
+        _betRepository = betRepository;
     }
     public async Task CreateBet(Bet entity)
     {
-        await _repositoryUnitOfWork.BetRepository.Create(entity);
+        await _betRepository.Create(entity);
     }
 
-    public async Task<bool> DeleteBet(Guid id)
+    public async Task DeleteBet(Guid id)
     {
-        await _repositoryUnitOfWork.BetRepository.Delete(id);
-        return true;
+        await _betRepository.Delete(id);
     }
 
     public async Task<IEnumerable<Bet>> GetAllBets()
     {
-        return await _repositoryUnitOfWork.BetRepository.GetAll();
+        return await _betRepository.GetAll();
     }
 
     public async Task<Bet> GetBet(Guid id)
     {
-        return await _repositoryUnitOfWork.BetRepository.GetById(id);
+        return await _betRepository.GetById(id);
     }
 
     public async Task SaveChanges()
     {
-        await _repositoryUnitOfWork.Commit();
+        await _betRepository.Save();
     }
 
-    public async Task<bool> UpdateBet(Bet entity)
+    public async Task UpdateBet(Bet entity)
     {
-        await _repositoryUnitOfWork.BetRepository.Update(entity);
-        return true;
+        await _betRepository.Update(entity);
     }
 }

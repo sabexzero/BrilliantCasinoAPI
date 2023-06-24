@@ -5,15 +5,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using alphaBeta.Helpers.Auth;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<GamesDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]));
-builder.Services.AddScoped<IBasePlayerRepository<Player>, PlayerRepository>();
-builder.Services.AddScoped<IRepositoryUnitOfWork, RepositoryUnitOfWork>();
-builder.Services.AddScoped<IBaseBetRepository<Bet>, BetsRepository>();
+builder.Services.AddScoped<IBaseBetRepository, BetsRepository>();
 builder.Services.AddScoped<IPlayersService, PlayersService>();
 builder.Services.AddScoped<IBetsService, BetsService>();
 builder.Services.AddScoped<ISlotsService, SlotsService>();
@@ -22,12 +25,6 @@ builder.Services.AddIdentity<Player, IdentityRole>()
     .AddDefaultTokenProviders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-}).AddIdentityCookies();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminClaim", policy =>

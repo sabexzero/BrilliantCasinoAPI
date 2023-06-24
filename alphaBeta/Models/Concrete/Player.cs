@@ -13,9 +13,15 @@ public class Player : IdentityUser
     {
         CreatedAt = DateTime.UtcNow;
         UserName = username;
-        Balance = 0;
+        Balance = 1000;
         WinChance = 0.36;
         Bets = new List<Bet>();
     }
-    public Player() { }
+    public Player() 
+    {
+        CreatedAt = DateTime.UtcNow;
+        Balance = 1000;
+        WinChance = 0.36;
+        Bets = new List<Bet>();
+    }
 }

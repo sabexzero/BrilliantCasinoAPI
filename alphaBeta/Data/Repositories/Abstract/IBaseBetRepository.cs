@@ -1,10 +1,11 @@
 
-public interface IBaseBetRepository<T>
+public interface IBaseBetRepository
 {
-    Task<T> Create(T entity);
-    Task<T> GetById(Guid id);
-    Task<IEnumerable<T>> GetByUsername(string username);
-    Task<IEnumerable<T>> GetAll();
-    Task<bool> Delete(Guid id);
+    Task Create(Bet entity);
+    Task<Bet> GetById(Guid id);
+    Task<IEnumerable<Bet>> GetByUsername(string username);
+    Task<IEnumerable<Bet>> GetAll();
+    Task Delete(Guid id);
+    Task Save();
     Task Update(Bet bet);
 }
