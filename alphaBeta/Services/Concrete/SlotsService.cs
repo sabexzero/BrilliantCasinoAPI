@@ -1,4 +1,8 @@
+using BrilliantCasinoAPI.Services.Abstract;
+using BrilliantCasinoAPI.Helpers.Slots;
+using BrilliantCasinoAPI.Models.Concrete;
 
+namespace BrilliantCasinoAPI.Services.Concrete;
 public class SlotsService : ISlotsService
 {
     private readonly IPlayersService _playersService;

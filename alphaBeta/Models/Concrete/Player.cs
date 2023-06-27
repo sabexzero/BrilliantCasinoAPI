@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 /// <summary>
 /// Модель игрока
 /// </summary>
+
+namespace BrilliantCasinoAPI.Models.Concrete;
 public class Player : IdentityUser
 {
     public DateTime CreatedAt { get; set; }

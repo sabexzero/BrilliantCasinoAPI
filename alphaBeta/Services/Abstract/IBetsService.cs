@@ -1,4 +1,6 @@
+using BrilliantCasinoAPI.Models.Concrete;
 
+namespace BrilliantCasinoAPI.Services.Abstract;
 public interface IBetsService
 {
     Task CreateBet(Bet entity);

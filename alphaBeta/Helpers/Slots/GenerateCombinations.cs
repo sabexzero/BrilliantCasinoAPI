@@ -1,4 +1,5 @@
 
+namespace BrilliantCasinoAPI.Helpers.Slots;
 public static class GenerateCombinations
 {
     public static List<string> Generate(int n, int k)

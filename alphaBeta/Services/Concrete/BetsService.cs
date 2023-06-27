@@ -1,4 +1,8 @@
+using BrilliantCasinoAPI.Services.Abstract;
+using BrilliantCasinoAPI.Data.Repositories.Abstract;
+using BrilliantCasinoAPI.Models.Concrete;
 
+namespace BrilliantCasinoAPI.Services.Concrete;
 public class BetsService : IBetsService
 {
     private readonly IBaseBetRepository _betRepository;

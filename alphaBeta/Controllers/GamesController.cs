@@ -1,28 +1,39 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
-namespace alphaBeta.Controllers
+using BrilliantCasinoAPI.Services.Abstract;
+
+namespace BrilliantCasinoAPI.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class GamesController : Controller
     {
         private readonly ISlotsService _slotsService;
-        public GamesController(ISlotsService slotsService)
+        private readonly IPlayersService _playerService;
+        public GamesController(ISlotsService slotsService, IPlayersService playerService)
         {
+            _playerService = playerService;
             _slotsService = slotsService;
         }
         [HttpGet("Slots")]
-        [Authorize("RequireUserClaim")]
-        public async Task<ActionResult<KeyValuePair<string, int>>> Slots(string playerId, long amount)
+        public async Task<ActionResult<KeyValuePair<string, int>>> Slots(long amount)
         {
-            return await _slotsService.PlayGameAsync(playerId, amount);
+            if (User?.Identity?.IsAuthenticated == false)
+                return Unauthorized();
+
+            if (User?.HasClaim(ClaimTypes.Role, "SlotsPlayer") == true)
+            {
+                var player = await _playerService.GetPlayerByName(User.Identity.Name);
+                if (player != null)
+                {
+                    var result = await _slotsService.PlayGameAsync(player.Id, amount);
+                    return Ok(result);
+                }
+            }
+            return Unauthorized();
         }
     }
 }

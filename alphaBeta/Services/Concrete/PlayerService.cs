@@ -1,10 +1,14 @@
-
 using Microsoft.AspNetCore.Identity;
-using alphaBeta.Helpers.Auth;
+using BrilliantCasinoAPI.Helpers.Auth;
 using System.Security.Claims;
-using System;
-using Microsoft.Extensions.Logging;
 
+using BrilliantCasinoAPI.Services.Abstract;
+using BrilliantCasinoAPI.Data.Repositories.Abstract;
+using BrilliantCasinoAPI.Models.Concrete;
+using BrilliantCasinoAPI.Helpers.Exceptions.Player;
+using BrilliantCasinoAPI.Helpers.Exceptions;
+
+namespace BrilliantCasinoAPI.Services.Concrete;
 public class PlayersService : IPlayersService
 {
     private readonly IBaseBetRepository _betRepository;
@@ -40,7 +44,7 @@ public class PlayersService : IPlayersService
         }
     }
 
-    public async Task CreatePlayer(string username, string password)
+    public async Task<Player> CreatePlayer(string username, string password)
     {
         var passwordValidator = new PasswordValidator<Player>();
         var findName = await _userManager.FindByNameAsync(username);
@@ -60,9 +64,11 @@ public class PlayersService : IPlayersService
             }
             var player = await _userManager.FindByNameAsync(username);
             await AddClaimForUser(player.Id, PlayerClaims.User.ToString());
+            await AddClaimForUser(player.Id, PlayerClaims.SlotsPlayer.ToString());
         }
         else
             throw new PasswordBadException();
+        return newPlayer;
     }
 
     public async Task DeletePlayer(string id)

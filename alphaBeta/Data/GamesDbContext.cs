@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
+using BrilliantCasinoAPI.Models.Concrete;
+
+namespace BrilliantCasinoAPI.Data;
 public class GamesDbContext : IdentityDbContext<Player, IdentityRole, string>
 {
     public GamesDbContext(DbContextOptions<GamesDbContext> options) : base(options)

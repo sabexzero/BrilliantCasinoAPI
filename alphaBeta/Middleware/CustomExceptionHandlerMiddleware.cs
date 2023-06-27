@@ -1,7 +1,11 @@
 using Newtonsoft.Json;
 using System.Net;
 
-namespace alphaBeta.Middleware;
+using BrilliantCasinoAPI.Helpers.Exceptions;
+using BrilliantCasinoAPI.Helpers.Exceptions.Player;
+using BrilliantCasinoAPI.Helpers.Exceptions.Bet;
+
+namespace BrilliantCasinoAPI.Middleware;
 public class CustomExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
@@ -19,7 +23,7 @@ public class CustomExceptionHandlerMiddleware
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = HttpStatusCode.InternalServerError;
         var result = string.Empty;
@@ -80,7 +84,7 @@ public class CustomExceptionHandlerMiddleware
         context.Response.StatusCode = (int)code;
         var errorResponse = new ErrorResponse(result);
         var json = JsonConvert.SerializeObject(errorResponse);
-        return context.Response.WriteAsync(json);
+        await context.Response.WriteAsync(json);
     }
 
 }

@@ -1,14 +1,20 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using alphaBeta.Helpers.Auth;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using BrilliantCasinoAPI.Helpers.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BrilliantCasinoAPI.Middleware;
+using Microsoft.OpenApi.Models;
+
+using BrilliantCasinoAPI.Services.Concrete;
+using BrilliantCasinoAPI.Services.Abstract;
+using BrilliantCasinoAPI.Data;
+using BrilliantCasinoAPI.Data.Repositories.Abstract;
+using BrilliantCasinoAPI.Data.Repositories.Concrete;
+using BrilliantCasinoAPI.Models.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +26,32 @@ builder.Services.AddScoped<IBaseBetRepository, BetsRepository>();
 builder.Services.AddScoped<IPlayersService, PlayersService>();
 builder.Services.AddScoped<IBetsService, BetsService>();
 builder.Services.AddScoped<ISlotsService, SlotsService>();
-builder.Services.AddIdentity<Player, IdentityRole>()    
-    .AddEntityFrameworkStores<GamesDbContext>()
-    .AddDefaultTokenProviders();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminClaim", policy =>
@@ -33,18 +60,46 @@ builder.Services.AddAuthorization(options =>
         policy.Requirements.Add(new HasClaimRequirement("Role", "User")));
 });
 
-builder.Services.AddSingleton<IAuthorizationHandler, HasClaimHandler>();
+builder.Services.AddAuthentication(cfg =>
+{
+    cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+       .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "yourdomain.com",
+                        ValidAudience = "yourdomain.com",
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes("My secret goes here really"))
+                    };
 
-// Замените предыдущую строку регистрации IUserStore на следующую строку:
+                    options.RequireHttpsMetadata = false;
+                });
+
+builder.Services.AddIdentity<Player, IdentityRole>()
+    .AddEntityFrameworkStores<GamesDbContext>();
+
+builder.Services.AddSingleton<IAuthorizationHandler, HasClaimHandler>();
 builder.Services.AddScoped<IUserStore<Player>>(provider => new UserStore<Player>(provider.GetRequiredService<GamesDbContext>()));
 builder.Services.AddScoped<UserManager<Player>>();
 
 var app = builder.Build();
 
 app.UseSwagger();
+
 app.UseSwaggerUI();
 
+app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

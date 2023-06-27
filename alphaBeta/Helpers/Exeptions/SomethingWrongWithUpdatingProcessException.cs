@@ -1,4 +1,5 @@
 
+namespace BrilliantCasinoAPI.Helpers.Exceptions;
 public class SomethingWrongWithUpdatingProcessException : BaseException
 {
     public SomethingWrongWithUpdatingProcessException()

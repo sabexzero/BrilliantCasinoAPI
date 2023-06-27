@@ -1,3 +1,5 @@
+
+namespace BrilliantCasinoAPI.Helpers.Slots;
 public static class GenerateResultForPlayerChance
 {
     public static KeyValuePair<string, int> GenerateResultPairForLowWinChance(double loseChance, Dictionary<string,int> _combinationTable, Random rnd)

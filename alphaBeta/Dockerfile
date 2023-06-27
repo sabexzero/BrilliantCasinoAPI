@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["alphaBeta/alphaBeta.csproj", "alphaBeta/"]
-RUN dotnet restore "alphaBeta/alphaBeta.csproj"
+COPY ["BrilliantCasinoAPI/BrilliantCasinoAPI.csproj", "BrilliantCasinoAPI/"]
+RUN dotnet restore "BrilliantCasinoAPI/BrilliantCasinoAPI.csproj"
 COPY . .
-WORKDIR "/src/alphaBeta"
-RUN dotnet build "alphaBeta.csproj" -c Release -o /app/build
+WORKDIR "/src/BrilliantCasinoAPI"
+RUN dotnet build "BrilliantCasinoAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "alphaBeta.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BrilliantCasinoAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "alphaBeta.dll"]
+ENTRYPOINT ["dotnet", "BrilliantCasinoAPI.dll"]

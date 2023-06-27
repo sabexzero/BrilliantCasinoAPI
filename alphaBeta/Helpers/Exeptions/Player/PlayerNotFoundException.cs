@@ -1,4 +1,5 @@
 ﻿
+namespace BrilliantCasinoAPI.Helpers.Exceptions.Player;
 public class PlayerNotFoundException : BaseException
 {
     public PlayerNotFoundException()

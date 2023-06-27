@@ -1,7 +1,6 @@
-
 using Microsoft.AspNetCore.Authorization;
 
-namespace alphaBeta.Helpers.Auth
+namespace BrilliantCasinoAPI.Helpers.Auth
 {
     public class HasClaimRequirement : IAuthorizationRequirement
     {

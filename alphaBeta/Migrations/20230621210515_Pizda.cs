@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace alphaBeta.Migrations
+namespace BrilliantCasinoAPI.Migrations
 {
     /// <inheritdoc />
     public partial class Pizda : Migration

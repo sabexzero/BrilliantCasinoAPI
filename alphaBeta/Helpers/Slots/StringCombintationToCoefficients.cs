@@ -1,4 +1,5 @@
 
+namespace BrilliantCasinoAPI.Helpers.Slots;
 public class StringCombintationToCoefficients
 {
     public int ConvertToCoefficient(string input)

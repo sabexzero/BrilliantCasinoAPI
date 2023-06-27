@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// <summary>
 /// Model stavki
 /// </summary>
+
+namespace BrilliantCasinoAPI.Models.Concrete;
 public class Bet
 { 
     public Guid Id { get; set; }

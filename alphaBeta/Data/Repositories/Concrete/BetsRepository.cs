@@ -1,7 +1,12 @@
-
 using Microsoft.EntityFrameworkCore;
-using System;
 
+using BrilliantCasinoAPI.Models.Concrete;
+using BrilliantCasinoAPI.Data.Repositories.Abstract;
+using BrilliantCasinoAPI.Helpers.Exceptions.Bet;
+using BrilliantCasinoAPI.Helpers.Exceptions.Player;
+using BrilliantCasinoAPI.Helpers.Exceptions;
+
+namespace BrilliantCasinoAPI.Data.Repositories.Concrete;
 public class BetsRepository : IBaseBetRepository
 {
     private readonly GamesDbContext _context;
@@ -65,7 +70,6 @@ public class BetsRepository : IBaseBetRepository
         }
         catch (Exception)
         {
-
             throw new SomethingWrongWithSavingProcessException();
         }
     }
@@ -79,7 +83,6 @@ public class BetsRepository : IBaseBetRepository
         }
         catch (Exception)
         {
-
             throw new SomethingWrongWithUpdatingProcessException();
         }
     }

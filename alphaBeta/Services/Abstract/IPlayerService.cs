@@ -1,7 +1,9 @@
+using BrilliantCasinoAPI.Models.Concrete;
 
+namespace BrilliantCasinoAPI.Services.Abstract;
 public interface IPlayersService
 {
-    Task CreatePlayer(string username, string password);
+    Task<Player> CreatePlayer(string username, string password);
     Task DeletePlayer(string id);
     Task<IEnumerable<Player>> GetAllPlayers();
     Task<Player> GetPlayerById(string id);

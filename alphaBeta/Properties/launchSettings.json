@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "alphaBeta": {
+    "BrilliantCasinoAPI": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
