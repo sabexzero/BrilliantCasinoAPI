@@ -19,6 +19,7 @@ public class GamesDbContext : IdentityDbContext<Player, IdentityRole, string> //
     }
 
     public DbSet<Bet> Bets { get; set; } //таблица ставок
+    public DbSet<Lobby> Lobby { get; set; } //таблица лобби
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -4,6 +4,7 @@ using System.Net;
 using BrilliantCasinoAPI.Helpers.Exceptions;
 using BrilliantCasinoAPI.Helpers.Exceptions.Player;
 using BrilliantCasinoAPI.Helpers.Exceptions.Bet;
+using BrilliantCasinoAPI.Helpers.Exceptions.Lobby;
 
 namespace BrilliantCasinoAPI.Middleware;
 public class CustomExceptionHandlerMiddleware
@@ -76,6 +77,14 @@ public class CustomExceptionHandlerMiddleware
 
             case BetNotFoundException ex:
                 code = HttpStatusCode.NotFound;
+                result = ex.ErrorMessage;
+                break;
+            case LobbyNotFoundException ex:
+                code = HttpStatusCode.NotFound;
+                result = ex.ErrorMessage;
+                break;
+            case LobbyAlreadyExistException ex:
+                code = HttpStatusCode.BadRequest;
                 result = ex.ErrorMessage;
                 break;
         }

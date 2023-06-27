@@ -5,5 +5,6 @@
 namespace BrilliantCasinoAPI.Models.Concrete;
 public enum Games
 {
-    Slots
+    Slots,
+    Roulette
 }
