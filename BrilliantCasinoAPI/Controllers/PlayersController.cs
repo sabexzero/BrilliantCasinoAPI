@@ -23,8 +23,7 @@ public class PlayerController : Controller
         _signInManager = signInManager;
     }
 
-    [HttpGet("GenerateToken")]
-    public string CreateToken(string username)
+    private string CreateToken(string username)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes("My secret goes here really");

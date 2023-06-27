@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "alphaBeta", "alphaBeta\alphaBeta.csproj", "{846A75F5-07D9-48E8-9AF8-8A5720CF50D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrilliantCasinoAPI", "alphaBeta\BrilliantCasinoAPI.csproj", "{846A75F5-07D9-48E8-9AF8-8A5720CF50D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F34953B3-6566-4F61-8172-60BA72456103}"
 	ProjectSection(SolutionItems) = preProject
