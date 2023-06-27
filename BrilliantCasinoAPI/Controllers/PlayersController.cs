@@ -1,3 +1,8 @@
+/// <summary>
+/// Контроллер для работы с игроками
+/// </summary>
+
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -10,12 +15,12 @@ using BrilliantCasinoAPI.Models.Concrete;
 
 namespace BrilliantCasinoAPI.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
+[ApiController] //атрибут предназначен для помощи в определении контроллеров веб-API
+[Route("api/[controller]")] //атрибут для роутинга
 public class PlayerController : Controller
 {
     private readonly IPlayersService _playersService;
-    private readonly SignInManager<Player> _signInManager;
+    private readonly SignInManager<Player> _signInManager; //менеджер для управления аутентифицированными пользователями
 
     public PlayerController(IPlayersService playersService, SignInManager<Player> signInManager)
     {
@@ -23,53 +28,52 @@ public class PlayerController : Controller
         _signInManager = signInManager;
     }
 
-    private string CreateToken(string username)
+    private string CreateToken(string username) //метод для создания токена (пока что недоработан)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes("My secret goes here really");
+        var tokenHandler = new JwtSecurityTokenHandler(); //создаем обработчик токенов
+        var key = Encoding.UTF8.GetBytes("My secret goes here really"); //секретный ключ
 
-        var tokenDescriptor = new SecurityTokenDescriptor
+        var tokenDescriptor = new SecurityTokenDescriptor //создаем дескриптор
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, "User"),
                 new Claim(ClaimTypes.Role, "SlotsPlayer"),
-    }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+    }), //все нужные клаимсы для токена
+            Expires = DateTime.UtcNow.AddDays(7), //срок действия
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) //шифруем все это дело
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        var tokenString = tokenHandler.WriteToken(token);
+        var tokenString = tokenHandler.WriteToken(token); //делаем токен
 
         return tokenString;
     }
 
-    [HttpPut("CreatePlayer")]
+    [HttpPut("CreatePlayer")] //put метод для создания игрока
     public async Task<ActionResult> CreateNewPlayer(string username, string password)
     {
         var newUser = await _playersService.CreatePlayer(username, password);
-        await _signInManager.SignInAsync(newUser, isPersistent: true);
         return Ok();
     }
-    [HttpDelete("DeletePlayer")]
+    [HttpDelete("DeletePlayer")] //delete метод для удаления игрока
     public async Task<ActionResult> DeletePlayer(string id)
     {
         await _playersService.DeletePlayer(id);
         return Ok();
     }
-    [HttpGet("OnePlayerById")]
+    [HttpGet("OnePlayerById")] //get метод на получение игрока по Id
     public async Task<ActionResult<Player>> GetPlayer(string id)
     {
         return await _playersService.GetPlayerById(id);
     }
-    [HttpGet("OnePlayerByName")]
+    [HttpGet("OnePlayerByName")] //get метод на получение игрока по имени
     public async Task<ActionResult<Player>> GetPlayerByName(string username)
     {
         return await _playersService.GetPlayerByName(username);
     }
-    [HttpGet("AllPlayers")]
+    [HttpGet("AllPlayers")] //get метод на получение всех игроков
     public async Task<ActionResult<IEnumerable<Player>>> GetAllPlayers()
     {
         var list = await _playersService.GetAllPlayers();

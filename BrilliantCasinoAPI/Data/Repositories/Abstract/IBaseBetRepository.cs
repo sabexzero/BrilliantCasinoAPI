@@ -1,3 +1,8 @@
+/// <summary>
+/// Интерфейс репозитория ставок
+/// </summary>
+
+
 using BrilliantCasinoAPI.Models.Concrete;
 
 namespace BrilliantCasinoAPI.Data.Repositories.Abstract;
