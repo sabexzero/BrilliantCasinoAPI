@@ -25,9 +25,15 @@ public class BetsService : IBetsService
         return await _betRepository.GetAll();
     }
 
-    public async Task<Bet> GetBet(Guid id)
+    public async Task<Bet> GetBetById(Guid id)
     {
         return await _betRepository.GetById(id);
+    }
+
+    public async Task<IEnumerable<Bet>> GetBetsByUserId(string userId)
+    {
+        var listBets = await _betRepository.GetAll();
+        return listBets.Where(x => x.PlayerId == userId);
     }
 
     public async Task SaveChanges()
