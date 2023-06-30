@@ -3,6 +3,7 @@ using System;
 using BrilliantCasinoAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrilliantCasinoAPI.Migrations
 {
     [DbContext(typeof(GamesDbContext))]
-    partial class GamesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230630115815_again")]
+    partial class again
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +80,8 @@ namespace BrilliantCasinoAPI.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LobbyKey")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("LobbyId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");

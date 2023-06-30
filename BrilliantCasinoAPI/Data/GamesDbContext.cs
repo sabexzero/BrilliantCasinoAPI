@@ -23,9 +23,8 @@ public class GamesDbContext : IdentityDbContext<Player, IdentityRole, string> //
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Остальные конфигурации моделей...
+
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Player>()
-            .HasIndex(p => p.Email) //емейл должен быть уникальным
-            .IsUnique();
     }
 }

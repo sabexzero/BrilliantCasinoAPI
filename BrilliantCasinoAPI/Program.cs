@@ -23,9 +23,11 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<GamesDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]));
 builder.Services.AddScoped<IBaseBetRepository, BetsRepository>();
+builder.Services.AddScoped<IBaseLobbyRepository, LobbyRepository>();
 builder.Services.AddScoped<IPlayersService, PlayersService>();
 builder.Services.AddScoped<IBetsService, BetsService>();
 builder.Services.AddScoped<ISlotsService, SlotsService>();
+builder.Services.AddScoped<ILobbyService, LobbyService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -95,7 +97,7 @@ app.UseSwagger();
 
 app.UseSwaggerUI();
 
-app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+//app.UseMiddleware<CustomExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

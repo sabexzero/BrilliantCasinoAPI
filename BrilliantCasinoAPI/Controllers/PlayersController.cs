@@ -20,12 +20,10 @@ namespace BrilliantCasinoAPI.Controllers;
 public class PlayerController : Controller
 {
     private readonly IPlayersService _playersService;
-    private readonly SignInManager<Player> _signInManager; //менеджер для управления аутентифицированными пользователями
 
-    public PlayerController(IPlayersService playersService, SignInManager<Player> signInManager)
+    public PlayerController(IPlayersService playersService)
     {
         _playersService = playersService;
-        _signInManager = signInManager;
     }
 
     private string CreateToken(string username) //метод для создания токена (пока что недоработан)
@@ -54,7 +52,7 @@ public class PlayerController : Controller
     [HttpPut("CreatePlayer")] //put метод для создания игрока
     public async Task<ActionResult> CreateNewPlayer(string username, string password)
     {
-        var newUser = await _playersService.CreatePlayer(username, password);
+        await _playersService.CreatePlayer(username, password);
         return Ok();
     }
     [HttpDelete("DeletePlayer")] //delete метод для удаления игрока
