@@ -3,6 +3,7 @@ using System;
 using BrilliantCasinoAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrilliantCasinoAPI.Migrations
 {
     [DbContext(typeof(GamesDbContext))]
-    partial class GamesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230629103246_ChangeLobbyEntity")]
+    partial class ChangeLobbyEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +80,8 @@ namespace BrilliantCasinoAPI.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LobbyKey")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid?>("LobbyId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -118,6 +120,11 @@ namespace BrilliantCasinoAPI.Migrations
                         .HasColumnType("double precision");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("LobbyId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -305,6 +312,13 @@ namespace BrilliantCasinoAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BrilliantCasinoAPI.Models.Concrete.Player", b =>
+                {
+                    b.HasOne("Lobby", null)
+                        .WithMany("Players")
+                        .HasForeignKey("LobbyId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -359,6 +373,11 @@ namespace BrilliantCasinoAPI.Migrations
             modelBuilder.Entity("BrilliantCasinoAPI.Models.Concrete.Player", b =>
                 {
                     b.Navigation("Bets");
+                });
+
+            modelBuilder.Entity("Lobby", b =>
+                {
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

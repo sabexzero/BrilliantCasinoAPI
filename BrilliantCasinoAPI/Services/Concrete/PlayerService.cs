@@ -11,11 +11,9 @@ using BrilliantCasinoAPI.Helpers.Exceptions;
 namespace BrilliantCasinoAPI.Services.Concrete;
 public class PlayersService : IPlayersService
 {
-    private readonly IBaseBetRepository _betRepository;
     private readonly UserManager<Player> _userManager;
-    public PlayersService(IBaseBetRepository betRepository, UserManager<Player> userManager)
+    public PlayersService(UserManager<Player> userManager)
     {
-        _betRepository = betRepository;
         _userManager = userManager;
     }
 
@@ -54,7 +52,11 @@ public class PlayersService : IPlayersService
         var validateResult = await passwordValidator.ValidateAsync(_userManager,newPlayer, password);
         if (validateResult.Succeeded)
         {
-            try
+            await _userManager.CreateAsync(newPlayer, password);
+            var player = await _userManager.FindByNameAsync(username);
+            await AddClaimForUser(player.Id, PlayerClaims.User.ToString());
+            await AddClaimForUser(player.Id, PlayerClaims.SlotsPlayer.ToString());
+/*            try
             {
                 await _userManager.CreateAsync(newPlayer, password);
             }
@@ -64,7 +66,7 @@ public class PlayersService : IPlayersService
             }
             var player = await _userManager.FindByNameAsync(username);
             await AddClaimForUser(player.Id, PlayerClaims.User.ToString());
-            await AddClaimForUser(player.Id, PlayerClaims.SlotsPlayer.ToString());
+            await AddClaimForUser(player.Id, PlayerClaims.SlotsPlayer.ToString());*/
         }
         else
             throw new PasswordBadException();

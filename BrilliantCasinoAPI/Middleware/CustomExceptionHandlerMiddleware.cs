@@ -87,6 +87,14 @@ public class CustomExceptionHandlerMiddleware
                 code = HttpStatusCode.BadRequest;
                 result = ex.ErrorMessage;
                 break;
+            case ThePlayerIsAlreadyInTheLobbyException ex:
+                code = HttpStatusCode.BadRequest;
+                result = ex.ErrorMessage;
+                break;
+            case ThePlayerIsNotFoundInTheLobbyException ex:
+                code = HttpStatusCode.NotFound;
+                result = ex.ErrorMessage;
+                break;
         }
 
         context.Response.ContentType = "application/json";

@@ -4,7 +4,7 @@ using BrilliantCasinoAPI.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/controller")]
+[Route("api/[controller]")]
 public class BetController : Controller
 {
     private readonly IBetsService _betsService;

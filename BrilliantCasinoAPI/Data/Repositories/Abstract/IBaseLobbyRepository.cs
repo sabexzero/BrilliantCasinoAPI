@@ -10,7 +10,7 @@ public interface IBaseLobbyRepository
 {
     Task Create(Lobby entity);
     Task<Lobby> GetById(Guid id);
-    Task<IEnumerable<Lobby>> GetByUsername(string username);
+    Task<Lobby> GetByUsername(string username);
     Task<IEnumerable<Lobby>> GetAll();
     Task Delete(Guid id);
     Task Save();

@@ -7,26 +7,33 @@ using BrilliantCasinoAPI.Models.Concrete;
 using BrilliantCasinoAPI.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 
+namespace BrilliantCasinoAPI.Services.Concrete;
 public class LobbyService : ILobbyService
 {
     private readonly IBaseLobbyRepository _lobbyRepository;
-    private readonly UserManager<Player> _userManager;
-    public LobbyService(IBaseLobbyRepository lobbyRepository, UserManager<Player> userManager)
+    private readonly IPlayersService _playerService;
+    public LobbyService(IBaseLobbyRepository lobbyRepository, IPlayersService playerService)
     {
         _lobbyRepository = lobbyRepository;
-        _userManager = userManager;
+        _playerService = playerService;
     }
     public async Task AddPlayerToLobby(Guid lobbyId, string playerId)
     {
-        var player = await _userManager.FindByIdAsync(playerId);
+        var player = await _playerService.GetPlayerById(playerId);
         if (player == null)
             throw new PlayerNotFoundException();
         var lobby = await _lobbyRepository.GetById(lobbyId);
-        if(lobby == null)
-            throw new LobbyNotFoundException();
+        if (player.LobbyKey == lobby.Id.ToString())
+            throw new ThePlayerIsAlreadyInTheLobbyException();
+        if (lobby.PlayersCount == lobby.PlayersLimit)
+            throw new TheMaximumNumberOfPlayersHasAlreadyBeenReachedException();
         try
         {
-            lobby.Players = lobby.Players.Append(player);
+            player.LobbyKey = lobbyId.ToString();
+            lobby.PlayersCount += 1;
+            if (lobby.PlayersCount == lobby.PlayersAmountToStart)
+                lobby.State = "Ready To Start";
+            await _playerService.UpdatePlayer(player);
             await _lobbyRepository.Update(lobby);
         }
         catch (Exception)
@@ -38,10 +45,17 @@ public class LobbyService : ILobbyService
 
     public async Task CreateLobby(string title, int amountToStart, int playersLimit, Games game)
     {
-        var newLobby = new Lobby(title, amountToStart, playersLimit, game);
-        var findDuplicate = await _lobbyRepository.GetById(newLobby.Id);
-        if (findDuplicate != null)
-            throw new LobbyAlreadyExistException();
+        var newLobby = new Lobby
+        {
+            Id = Guid.NewGuid(),
+            CreatedAt = DateTime.UtcNow,
+            State = "Not enough players to start",
+            Title = title,
+            PlayersCount = 0,
+            PlayersAmountToStart = amountToStart,
+            PlayersLimit = playersLimit,
+            Game = game
+        };
         try
         {
             await _lobbyRepository.Create(newLobby);
@@ -56,11 +70,9 @@ public class LobbyService : ILobbyService
     public async Task DeleteLobby(Guid id)
     {
         var findDeletingLobby = await _lobbyRepository.GetById(id);
-        if (findDeletingLobby == null)
-            throw new LobbyNotFoundException();
         try
-        {
-            findDeletingLobby.Active = false;
+        {   
+            findDeletingLobby.State = "Closed";
             await _lobbyRepository.Update(findDeletingLobby);
         }
         catch (Exception)
@@ -77,12 +89,14 @@ public class LobbyService : ILobbyService
     public async Task<Lobby> GetLobby(Guid id)
     {
         var gettinLobby = await _lobbyRepository.GetById(id);
-        if(gettinLobby == null)
-            throw new LobbyNotFoundException();
         return gettinLobby;
     }
-
-    public async Task<IEnumerable<Lobby>> GetLobbyByUsername(string username)
+    public async Task<int> GetPlayersAmount(Guid id)
+    {
+        var lobby = await _lobbyRepository.GetById(id);
+        return lobby.PlayersCount;
+    }
+    public async Task<Lobby> GetLobbyByUsername(string username)
     {
         return await _lobbyRepository.GetByUsername(username);
     }
@@ -90,14 +104,19 @@ public class LobbyService : ILobbyService
     public async Task RemovePlayerFromLobby(Guid lobbyId, string playerId)
     {
         var findLobby = await _lobbyRepository.GetById(lobbyId);
-        if (findLobby == null)
-            throw new LobbyNotFoundException();
-        var findPlayer = await _userManager.FindByIdAsync(playerId);
+        var findPlayer = await _playerService.GetPlayerById(playerId);
+        var playerInLobby = findPlayer.LobbyKey == findLobby.Id.ToString();
+        if (!playerInLobby)
+            throw new ThePlayerIsNotFoundInTheLobbyException();
         if (findPlayer == null)
             throw new PlayerNotFoundException();
         try
         {
-            findLobby.Players.ToList().RemoveAll(player => player.Id == playerId);
+            findPlayer.LobbyKey = string.Empty;
+            findLobby.PlayersCount -= 1;
+            if (findLobby.PlayersCount < findLobby.PlayersAmountToStart)
+                findLobby.State = "Not enough players to start";
+            await _playerService.UpdatePlayer(findPlayer);
             await _lobbyRepository.Update(findLobby);
         }
         catch (Exception)

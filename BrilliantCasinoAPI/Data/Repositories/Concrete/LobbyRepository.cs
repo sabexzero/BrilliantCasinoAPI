@@ -60,18 +60,21 @@ public class LobbyRepository : IBaseLobbyRepository
     {
         var lobby = await _context.Set<Lobby>().FirstOrDefaultAsync(s => s.Id == id);
         if (lobby == null) //если ставки нет, вернуть нечего
-            throw new BetNotFoundException();
+            throw new LobbyNotFoundException();
         else
             //есть что вернуть
             return lobby;
     }
 
-    public async Task<IEnumerable<Lobby>> GetByUsername(string username)
+    public async Task<Lobby> GetByUsername(string username)
     {
         var player = await _context.Set<Player>().FirstOrDefaultAsync(s => s.UserName == username);
         if (player == null) //не нашли игрока
             throw new PlayerNotFoundException();
-        return await _context.Set<Lobby>().Where(lobby => lobby.Players.Any(player => player.UserName == username)).ToListAsync();
+        var lobby = await _context.Set<Lobby>().FirstOrDefaultAsync(x => x.Id.ToString() == player.LobbyKey);
+        if (lobby == null)
+            throw new LobbyNotFoundException();
+        return lobby;
     }
 
     public async Task Save()
@@ -90,11 +93,12 @@ public class LobbyRepository : IBaseLobbyRepository
 
     public async Task Update(Lobby updatedLobby)
     {
+
         try
         {
-            //пытаемся обновить сущность
             _context.Set<Lobby>().Update(updatedLobby);
             await Save();
+            //пытаемся обновить сущность
         }
         catch (Exception)
         {

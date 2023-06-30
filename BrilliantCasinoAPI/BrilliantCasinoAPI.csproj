@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\Exeptions\Lobby\" />
     <Folder Include="Helpers\Slots\" />
     <Folder Include="Middleware\" />
     <Folder Include="Models\Abstract\" />
